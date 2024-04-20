@@ -1,39 +1,26 @@
-// Assuming this is the content of app/api/blogs/route.ts
+import {NextResponse}  from "next/server"
+import primsa from "../../lib/prismadb"
 
-import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../lib/prismadb';
-import getCurrentUser from '@/app/actions/getCurrentUser';
+import getCurrentUser from "@/app/actions/getCurrentUser";
 
-// This should be the default export
-export default async function(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).end(); // Method Not Allowed
-  }
+export async function POST(
+    request: Request,
+     ){
+        const currentUser = await getCurrentUser();
 
-  const currentUser = await getCurrentUser();
+        if (!currentUser){
+            return null
+        }
+        const body = await request.json();
 
-  if (!currentUser) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+        const {name, description, imageSrc} = body
 
-  const { name, description, imageSrc } = req.body;
+        const blog = await prisma?.blog.create({
+            data: {name, 
+                description, 
+                imageSrc,
+            userId: currentUser.id}
+        })
+        return NextResponse.json(blog)
+     }
 
-  try {
-    const blog = await prisma.blog.create({
-      data: {
-        name,
-        description,
-        imageSrc,
-        userId: currentUser.id,
-      },
-    });
-
-    return res.status(200).json(blog);
-  } catch (error) {
-    console.error('Failed to create blog post:', error);
-    return res.status(500).json({ error: 'Failed to create blog post' });
-  }
-}
