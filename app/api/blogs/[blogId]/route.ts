@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/lib/prismadb";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]"; 
 import { Prisma } from "@prisma/client";
 
 interface IParams {
