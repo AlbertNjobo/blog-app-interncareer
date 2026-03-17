@@ -65,7 +65,7 @@ export default function BlogId({name,description,imageSrc, blogId}:BlogProps) {
     
             event.preventDefault()
     
-            axios.post('/api/blogs/${blogId}',state)
+            axios.put(`/api/blogs/${blogId}`,state)
             .then(() => {
                 router.refresh()
                 // router.push('/')
