@@ -13,6 +13,18 @@ export async function POST(request: Request) {
 
   const { name, description, imageSrc } = body;
 
+  if (!name || typeof name !== 'string') {
+    return new NextResponse('Blog name is required', { status: 400 });
+  }
+
+  if (!description || typeof description !== 'string') {
+    return new NextResponse('Blog description is required', { status: 400 });
+  }
+
+  if (!imageSrc || typeof imageSrc !== 'string') {
+    return new NextResponse('Blog image is required', { status: 400 });
+  }
+
   const blog = await prisma?.blog.create({
     data: { name, description, imageSrc, userId: currentUser.id },
   });
